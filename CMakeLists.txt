@@ -5,8 +5,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-option(BUILD_UNIT_TESTS "Construir os testes unitários" ON)
-option(BUILD_PYTHON_MODULE "Construir o módulo Python" ON)
+option(BUILD_UNIT_TESTS "Construir os testes unitários" OFF)
+option(BUILD_PYTHON_MODULE "Construir o módulo Python" OFF)
 
 # Biblioteca Core 
 add_library(bess_core STATIC 

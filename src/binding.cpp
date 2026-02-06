@@ -4,9 +4,7 @@
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(bess_module, m) {
-  m.doc() = "Módulo para simulação de Battery Energy Storage System (BESS)";
-
+PYBIND11_MODULE(bess, m) {
   py::class_<BESS>(m, "BESS")
       .def(py::init<std::array<double, 24>>(), py::arg("consumer_curve"))
       .def("get_daily_stored_energy", &BESS::get_daily_stored_energy)
