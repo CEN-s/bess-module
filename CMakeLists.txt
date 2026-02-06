@@ -20,11 +20,12 @@ if(BUILD_PYTHON_MODULE)
     add_subdirectory(extern/pybind11) 
     pybind11_add_module(bess src/binding.cpp)
     target_link_libraries(bess PRIVATE bess_core)
+    install(TARGETS bess DESTINATION .)
 endif()
 
 # Testes
 if(BUILD_UNIT_TESTS)
-    add_subdirectory(extern/catch2) 
+    add_subdirectory(externc/catch2) 
     add_executable(unit_tests test/unit_tests.cpp)
     target_link_libraries(unit_tests PRIVATE bess_core Catch2::Catch2WithMain)
 

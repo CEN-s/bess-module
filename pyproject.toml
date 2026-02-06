@@ -3,7 +3,7 @@ requires = ["scikit-build-core", "pybind11"]
 build-backend = "scikit_build_core.build"
 
 [project]
-name = "bess-daimon"
+name = "bess"
 version = "0.0.1"
 
 [tool.scikit-build]
