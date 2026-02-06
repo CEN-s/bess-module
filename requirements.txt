@@ -1,0 +1,8 @@
+# Build
+pybind11
+scikit-build-core
+build
+
+# Teste
+pytest
+hypothesis

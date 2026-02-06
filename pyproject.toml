@@ -11,7 +11,7 @@ cmake.version = ">=3.15"
 build.verbose = true
 
 [tool.scikit-build.cmake.define]
-BUILD_UNIT_TESTS = "OFF"
+BUILD_TESTS = "OFF"
 BUILD_PYTHON_MODULE = "ON"
 
 [tool.scikit-build.sdist]
