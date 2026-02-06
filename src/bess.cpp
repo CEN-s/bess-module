@@ -7,13 +7,9 @@ BESS::BESS(std::array<double, 24> consumer_curve)
     : consumer_curve(consumer_curve) {}
 
 double BESS::getDailyStoredEnergy() const {
-  double res = 0.0;
-  for (const auto& n : consumer_curve) {
-    if (n < 0) {
-      res += n;
-    }
-  }
-  return std::abs(res);
+  return std::accumulate(
+      consumer_curve.begin(), consumer_curve.end(), 0.0,
+      [](double acc, double val) { return acc + std::max(0.0, val); });
 }
 
 double BESS::getMonthlyStoredEnergy() const {
@@ -72,4 +68,6 @@ void BESS::generateResultingCurve() {
   }
 }
 
-double BESS::getPowerAtHour(int hour) const { return resulting_curve[hour]; }
+double BESS::getPowerAtHour(int hour) const {
+  return resulting_curve[hour - 1];
+}
