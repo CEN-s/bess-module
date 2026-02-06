@@ -1,42 +1,44 @@
 #include "bess.h"
+
+#include <array>
 #include <stdexcept>
 
 BESS::BESS(std::array<double, 24> consumer_curve)
     : consumer_curve(consumer_curve) {}
 
-BESS::~BESS() {}
-
-double BESS::get_daily_stored_energy() {
+double BESS::getDailyStoredEnergy() const {
   double res = 0.0;
-  for (auto &n : consumer_curve)
-    if (n < 0)
+  for (const auto& n : consumer_curve) {
+    if (n < 0) {
       res += n;
-  return -res;
+    }
+  }
+  return std::abs(res);
 }
 
-double BESS::get_monthly_stored_energy() {
-  return get_daily_stored_energy() * 30;
+double BESS::getMonthlyStoredEnergy() const {
+  return getDailyStoredEnergy() * 30;
 }
 
-void BESS::set_discharge_interval(int start_hour, int end_hour) {
-  if (start_hour < 0 || start_hour > 23 || end_hour < 0 || end_hour > 23) {
-    throw std::invalid_argument("Hour must be between 0 and 23.");
+void BESS::setDischargeInterval(const int start_hour, const int end_hour) {
+  if (start_hour < 1 || start_hour > 24 || end_hour < 1 || end_hour > 24) {
+    throw std::invalid_argument("Hour must be between 1 and 24.");
   }
 
-  int i = start_hour;
+  int i = start_hour - 1;
   while (i != end_hour) {
     if (consumer_curve[i] < 0) {
       throw std::invalid_argument(
-          "Not possible to define interval where there is generation.");
+          "Not possible to define an interval where there is generation.");
     }
     i = (i + 1) % 24;
   }
 
-  discharge_start_hour = start_hour;
-  discharge_end_hour = end_hour;
+  discharge_start_hour = start_hour - 1;
+  discharge_end_hour = end_hour - 1;
 }
 
-void BESS::generate_resulting_curve() {
+void BESS::generateResultingCurve() {
   for (int i = 0; i < 24; ++i) {
     if (consumer_curve[i] < 0) {
       resulting_curve[i] = 0.0;
@@ -47,22 +49,20 @@ void BESS::generate_resulting_curve() {
 
   double total_consumption_in_window = 0.0;
   int i = discharge_start_hour;
-  while (i != discharge_end_hour) {
+  while (i != std::max(discharge_end_hour + 1, 23)) {
     if (consumer_curve[i] > 0) {
       total_consumption_in_window += consumer_curve[i];
     }
     i = (i + 1) % 24;
   }
 
-  double stored_energy = get_daily_stored_energy();
+  const double stored_energy = getDailyStoredEnergy();
 
   if (total_consumption_in_window > 0) {
     i = discharge_start_hour;
-    while (i != discharge_end_hour) {
-      double weight = consumer_curve[i] / total_consumption_in_window;
-      double injection = stored_energy * weight;
-
-      resulting_curve[i] -= injection;
+    while (i != std::max(discharge_end_hour + 1, 23)) {
+      resulting_curve[i] -=
+          stored_energy * (consumer_curve[i] / total_consumption_in_window);
       if (resulting_curve[i] < 0) {
         resulting_curve[i] = 0.0;
       }
@@ -72,4 +72,4 @@ void BESS::generate_resulting_curve() {
   }
 }
 
-double BESS::get_power_at_hour(int hour) { return resulting_curve[hour]; }
+double BESS::getPowerAtHour(int hour) const { return resulting_curve[hour]; }
