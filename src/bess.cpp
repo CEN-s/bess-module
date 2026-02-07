@@ -12,7 +12,7 @@ BESS::BESS(std::array<double, 24> consumer_curve)
 double BESS::getDailyStoredEnergy() const {
   return std::accumulate(
       consumer_curve.begin(), consumer_curve.end(), 0.0,
-      [](double acc, double val) { return acc + std::max(0.0, val); });
+      [](double acc, double val) { return acc + std::max(0.0, -val); });
 }
 
 double BESS::getMonthlyStoredEnergy() const {
