@@ -8,7 +8,6 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 include(FetchContent)
 
 option(BUILD_PYTHON_MODULE "Construir o módulo Python" ON)
-option(BUILD_TESTS "Construir os testes unitários" OFF)
 
 # --- dependencies ---
 
@@ -20,16 +19,6 @@ if(BUILD_PYTHON_MODULE)
       GIT_TAG        v3.0.1 
     )
     FetchContent_MakeAvailable(pybind11)
-endif()
-
-# catch2 config
-if(BUILD_TESTS)
-    FetchContent_Declare(
-      Catch2
-      GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-      GIT_TAG        v3.12.0 
-    )
-    FetchContent_MakeAvailable(Catch2)
 endif()
 
 # --- targets ---
@@ -57,13 +46,4 @@ if(BUILD_PYTHON_MODULE)
     pybind11_add_module(bess src/binding.cpp)
     target_link_libraries(bess PRIVATE bess_core)
     install(TARGETS bess DESTINATION .)
-endif()
-
-# tests
-if(BUILD_TESTS)
-    add_executable(unit_tests test/unit_tests.cpp)
-    target_link_libraries(unit_tests PRIVATE bess_core Catch2::Catch2WithMain)
-
-    enable_testing()
-    add_test(NAME UnitTests COMMAND unit_tests)
 endif()

@@ -1,6 +1,9 @@
 #include "bess.h"
 
+#include <algorithm>
 #include <array>
+#include <numeric>
+#include <ranges>
 #include <stdexcept>
 
 BESS::BESS(std::array<double, 24> consumer_curve)
@@ -27,7 +30,7 @@ void BESS::setDischargeInterval(const int start_hour, const int end_hour) {
                   return consumer_curve[(start_hour - 1 + i) % 24];
                 });
 
-  has_generation =
+  bool has_generation =
       std::ranges::any_of(window, [](double val) { return val < 0; });
 
   if (has_generation) {
@@ -40,8 +43,8 @@ void BESS::setDischargeInterval(const int start_hour, const int end_hour) {
 }
 
 void BESS::generateResultingCurve() {
-  std::views::transform(consumer_curve, resulting_curve.begin(),
-                        [](double val) { return std::max(0.0, val); });
+  std::ranges::transform(consumer_curve, resulting_curve.begin(),
+                         [](double val) { return std::max(0.0, val); });
 
   const int size = (discharge_end_index - discharge_start_index + 24) % 24 + 1;
 
