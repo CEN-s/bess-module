@@ -8,8 +8,8 @@ class BESS {
   std::array<double, 24> consumer_curve{};
   std::array<double, 24> resulting_curve{};
 
-  int discharge_start_hour = 0;
-  int discharge_end_hour = 0;
+  int discharge_start_index = 0;
+  int discharge_end_index = 0;
 
  public:
   double getDailyStoredEnergy() const;

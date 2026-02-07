@@ -21,50 +21,50 @@ void BESS::setDischargeInterval(const int start_hour, const int end_hour) {
     throw std::invalid_argument("Hour must be between 1 and 24.");
   }
 
-  int i = start_hour - 1;
-  while (i != end_hour) {
-    if (consumer_curve[i] < 0) {
-      throw std::invalid_argument(
-          "Not possible to define an interval where there is generation.");
-    }
-    i = (i + 1) % 24;
+  auto size = (end_hour - start_hour + 24) % 24 + 1;
+
+  auto window = std::views::iota(0, size) | std::views::transform([&](int i) {
+                  return consumer_curve[(start_hour - 1 + i) % 24];
+                });
+
+  has_generation = std::any_of(window.begin(), window.end(),
+                               [](double val) { return val < 0; });
+
+  if (has_generation) {
+    throw std::invalid_argument(
+        "Not possible to define an interval where there is generation.");
   }
 
-  discharge_start_hour = start_hour - 1;
-  discharge_end_hour = end_hour - 1;
+  discharge_start_index = start_hour - 1;
+  discharge_end_index = end_hour - 1;
 }
 
 void BESS::generateResultingCurve() {
-  for (int i = 0; i < 24; ++i) {
-    if (consumer_curve[i] < 0) {
-      resulting_curve[i] = 0.0;
-    } else {
-      resulting_curve[i] = consumer_curve[i];
-    }
-  }
+  std::ranges::transform(consumer_curve, resulting_curve.begin(),
+                         [](double val) { return std::max(0.0, val); });
 
-  double total_consumption_in_window = 0.0;
-  int i = discharge_start_hour;
-  while (i != std::max(discharge_end_hour + 1, 23)) {
-    if (consumer_curve[i] > 0) {
-      total_consumption_in_window += consumer_curve[i];
-    }
-    i = (i + 1) % 24;
-  }
+  const int size = (discharge_end_index - discharge_start_index + 24) % 24 + 1;
 
-  const double stored_energy = getDailyStoredEnergy();
+  auto target_indices =
+      std::views::iota(0, size) | std::views::transform([&](int i) {
+        return (discharge_start_index + i) % 24;
+      });
 
-  if (total_consumption_in_window > 0) {
-    i = discharge_start_hour;
-    while (i != std::max(discharge_end_hour + 1, 23)) {
-      resulting_curve[i] -=
-          stored_energy * (consumer_curve[i] / total_consumption_in_window);
-      if (resulting_curve[i] < 0) {
-        resulting_curve[i] = 0.0;
-      }
+  auto window = std::views::iota(0, size) | std::views::transform([&](int i) {
+                  return consumer_curve[(discharge_start_index + i) % 24];
+                });
 
-      i = (i + 1) % 24;
-    }
+  double window_consumption =
+      std::accumulate(window.begin(), window.end(), 0.0);
+
+  if (window_consumption > 0.0) {
+    const double stored_energy = getDailyStoredEnergy();
+
+    std::ranges::for_each(target_indices, [&](int idx) {
+      double val = consumer_curve[idx];
+      double reduction = stored_energy * (val / window_consumption);
+      resulting_curve[idx] = std::max(0.0, val - reduction);
+    });
   }
 }
 
