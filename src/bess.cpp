@@ -27,8 +27,8 @@ void BESS::setDischargeInterval(const int start_hour, const int end_hour) {
                   return consumer_curve[(start_hour - 1 + i) % 24];
                 });
 
-  has_generation = std::any_of(window.begin(), window.end(),
-                               [](double val) { return val < 0; });
+  has_generation =
+      std::ranges::any_of(window, [](double val) { return val < 0; });
 
   if (has_generation) {
     throw std::invalid_argument(
@@ -40,8 +40,8 @@ void BESS::setDischargeInterval(const int start_hour, const int end_hour) {
 }
 
 void BESS::generateResultingCurve() {
-  std::ranges::transform(consumer_curve, resulting_curve.begin(),
-                         [](double val) { return std::max(0.0, val); });
+  std::views::transform(consumer_curve, resulting_curve.begin(),
+                        [](double val) { return std::max(0.0, val); });
 
   const int size = (discharge_end_index - discharge_start_index + 24) % 24 + 1;
 
@@ -60,11 +60,14 @@ void BESS::generateResultingCurve() {
   if (window_consumption > 0.0) {
     const double stored_energy = getDailyStoredEnergy();
 
-    std::ranges::for_each(target_indices, [&](int idx) {
-      double val = consumer_curve[idx];
-      double reduction = stored_energy * (val / window_consumption);
-      resulting_curve[idx] = std::max(0.0, val - reduction);
-    });
+    std::ranges::for_each(
+        target_indices, [this, window_consumption, stored_energy](int i) {
+          double current_val = consumer_curve[i];
+          double energy_to_dispatch =
+              stored_energy * (current_val / window_consumption);
+
+          resulting_curve[i] = std::max(0.0, current_val - energy_to_dispatch);
+        });
   }
 }
 
