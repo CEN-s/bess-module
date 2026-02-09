@@ -39,7 +39,7 @@ else()
     )
 endif()
 target_include_directories(bess_core PUBLIC include)
-set_target_properties(bess_core PROPERTIES POSITION_INDEPENDENT_CODE ON)
+set_target_properties(score PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 # python module
 if(BUILD_PYTHON_MODULE)

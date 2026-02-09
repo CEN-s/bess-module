@@ -4,13 +4,6 @@
 #include <array>
 
 class BESS {
- private:
-  std::array<double, 24> consumer_curve{};
-  std::array<double, 24> resulting_curve{};
-
-  int discharge_start_index = 0;
-  int discharge_end_index = 0;
-
  public:
   double getDailyStoredEnergy() const;
   double getMonthlyStoredEnergy() const;
@@ -20,7 +13,16 @@ class BESS {
   void generateResultingCurve();
   double getPowerAtHour(int hour) const;
 
-  explicit BESS(std::array<double, 24> consumer_curve);
+  explicit BESS(const std::array<double, 24>& consumer_curve);
+
+ private:
+  std::array<double, 24> consumer_curve{};
+  std::array<double, 24> resulting_curve{};
+
+  double daily_stored_energy = 0;
+
+  int discharge_start_index = 0;
+  int discharge_end_index = 0;
 };
 
 #endif

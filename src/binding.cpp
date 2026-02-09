@@ -15,7 +15,7 @@ PYBIND11_MODULE(bess_module, m) {
       m, "BESS",
       "Classe para simulação de Battery Energy Storage Systems (BESS)")
       .def(py::init<std::array<double, 24>>(), py::arg("consumer_curve"),
-           "Inicializa o BESS com a curva de carga de 24 horas (kW).")
+           "Inicializa o BESS com uma curva de carga de 24 horas (kW).")
 
       .def_property_readonly("daily_stored_energy", &BESS::getDailyStoredEnergy,
                              "Retorna a energia diária total armazenada em kWh "
@@ -37,5 +37,5 @@ PYBIND11_MODULE(bess_module, m) {
 
       .def("get_power_at_hour", &BESS::getPowerAtHour, py::arg("hour"),
            "Retorna o valor da potência (kW) na curva resultante para um "
-           "instante 't'.");
+           "instante 'hour'.");
 }
