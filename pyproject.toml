@@ -6,13 +6,5 @@ build-backend = "scikit_build_core.build"
 name = "bess_module"
 version = "0.0.1"
 
-[tool.scikit-build]
-cmake.version = ">=3.15"
-build.verbose = true
-
-[tool.scikit-build.cmake.define]
-BUILD_PYTHON_MODULE = "ON"
-
 [tool.scikit-build.sdist]
-include = ["src/**", "include/**", "extern/pybind11/**", "CMakeLists.txt"]
-exclude = ["extern/catch2/**", "test/**"]
+include = ["include/**", "src/**"]

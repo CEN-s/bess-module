@@ -6,9 +6,8 @@
 namespace py = pybind11;
 
 PYBIND11_MODULE(bess_module, m) {
-  m.doc() =
-      "Daimon BESS Simulation Library - Ferramenta para análise de "
-      "armazenamento de energia.";
+  m.doc() = "Daimon BESS Simulation Library - Ferramenta para análise de "
+            "armazenamento de energia.";
   m.attr("__version__") = "1.0.0";
 
   py::class_<BESS>(
