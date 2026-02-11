@@ -2,24 +2,31 @@
 #define BESS_H
 
 #include <array>
+#include <utility>
+#include <cstddef>
+
+static constexpr int HOURS = 24;
 
 class BESS {
 public:
-  explicit BESS(const std::array<double, 24> &consumer_curve);
+  explicit BESS(const std::array<double, HOURS> &consumer_curve);
 
+  void setConsumerCurve(const std::array<double, HOURS> &consumer_curve);
   double getDailyStoredEnergy() const;
   double getMonthlyStoredEnergy() const;
   void setDischargeInterval(const int start_hour, const int end_hour);
   void generateResultingCurve();
-  double getPowerAtHour(int hour) const;
+  double getResultingCurve() const; 
+  double getPowerAtHour(const int hour) const;  
 
 private:
-  std::array<double, 24> consumer_curve{};
-  std::array<double, 24> resulting_curve{};
+  std::array<double, HOURS> consumer_curve{};
+  std::array<double, HOURS> resulting_curve{};
 
   double daily_stored_energy = 0.0;
-  int discharge_start_index = 0;
-  int discharge_end_index = 0;
+  double interval_consumption = 0.0;
+
+  std::pair<std::size_t, std::size_t> discharge_interval{};
 };
 
 #endif // BESS_H

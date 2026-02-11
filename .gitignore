@@ -1,6 +1,3 @@
 build
 dist
 .venv
-.hypothesis
-.pytest_cache
-tests/__pycache__

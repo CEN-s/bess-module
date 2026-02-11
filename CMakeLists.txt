@@ -11,8 +11,9 @@ target_include_directories(bess_module PRIVATE
 )
 
 target_sources(bess_module PRIVATE 
-    src/binding.cpp 
     src/bess.cpp
+    src/binding.cpp 
+    src/utils.cpp
 )
 
 install(TARGETS bess_module DESTINATION .)
