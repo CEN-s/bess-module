@@ -45,4 +45,3 @@ void forEachInterval(const std::array<double, HOURS>& input_container,
 
 std::pair<std::size_t, std::size_t> getComplementInterval(
     const std::pair<std::size_t, std::size_t> interval);
-}
