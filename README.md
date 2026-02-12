@@ -1,7 +1,7 @@
 # BESS Simulation Engine (High-Performance C++ Backend)
 
 [![Language](https://img.shields.io/badge/language-C%2B%2B-blue.svg)](https://en.cppreference.com/)
-[![Python](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/)
+[![Python](https://img.shields.io/badge/python-3.13%2B-blue.svg)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-GPL--3.0-green.svg)](LICENSE)
 
 A high-performance C++ backend for simulating Battery Energy Storage Systems (BESS), featuring seamless Python bindings via Pybind11. This project demonstrates a hybrid architecture where computationally intensive simulation logic is handled by optimized C++ code, while remaining easily accessible for data science workflows in Python.
