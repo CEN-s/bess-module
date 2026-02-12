@@ -1,4 +1,4 @@
-# BESS Simulation Engine (High-Performance C++ Backend)
+# BESS Simulation Engine
 
 [![Language](https://img.shields.io/badge/language-C%2B%2B-blue.svg)](https://en.cppreference.com/)
 [![Python](https://img.shields.io/badge/python-3.13%2B-blue.svg)](https://www.python.org/)
