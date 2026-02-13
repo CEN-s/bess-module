@@ -39,8 +39,11 @@ The project follows a modular structure:
 git clone https://github.com/CEN-s/bess-daimon.git
 cd bess-daimon
 
-# Install dependencies and the project in editable mode
+# Install dependencies and the project
 uv sync
+
+# Build the module
+uv build
 ```
 
 ### Manual Build (CMake)
