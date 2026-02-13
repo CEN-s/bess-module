@@ -11,14 +11,14 @@ class BESS {
 public:
   explicit BESS(const std::array<double, HOURS> &consumer_curve);
 
-  void setConsumerCurve(const std::array<double, HOURS> &consumer_curve);
   std::array<double, HOURS> getConsumerCurve() const; 
+  void setConsumerCurve(const std::array<double, HOURS> &consumer_curve);
 
   double getDailyStoredEnergy() const;
   double getMonthlyStoredEnergy() const;
 
-  void setDischargeInterval(std::pair<std::size_t, std::size_t> interval);
   std::pair<std::size_t, std::size_t> getDischargeInterval() const; 
+  void setDischargeInterval(std::pair<std::size_t, std::size_t> interval);
 
   void generateResultingCurve();
   std::array<double, HOURS> getResultingCurve() const; 
@@ -33,7 +33,6 @@ public:
 private:
   std::array<double, HOURS> consumer_curve{};
   std::array<double, HOURS> resulting_curve{};
-  
 
   double daily_stored_energy = 0.0;
   double interval_consumption = 0.0;

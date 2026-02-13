@@ -15,8 +15,9 @@ BESS::BESS(const std::array<double, HOURS> &consumer_curve)
       [](double acc, double val) { return acc + std::max(0.0, -val); });
 }
 
-std::array<double, HOURS> BESS::getResultingCurve() const { return resulting_curve; }
-
+std::array<double, HOURS> BESS::getConsumerCurve() const {
+  return consumer_curve;
+}
 
 void BESS::setConsumerCurve(const std::array<double, HOURS> &curve) {
   consumer_curve = curve;
@@ -24,10 +25,6 @@ void BESS::setConsumerCurve(const std::array<double, HOURS> &curve) {
   daily_stored_energy = std::accumulate(
       consumer_curve.begin(), consumer_curve.end(), 0.0,
       [](double acc, double val) { return acc + std::max(0.0, -val); });
-}
-
-std::array<double, HOURS> BESS::getConsumerCurve() const {
-  return consumer_curve;
 }
 
 double BESS::getDailyStoredEnergy() const { return daily_stored_energy; }
@@ -42,8 +39,9 @@ void BESS::setDischargeInterval(std::pair<std::size_t, std::size_t> input_interv
        end_hour < 1 || end_hour > HOURS) {
     throw std::invalid_argument("Input hours must be between 1 and 24");
   }
-  const std::size_t start_index = static_cast<std::size_t>(start_hour - 1);
-  const std::size_t end_index = static_cast<std::size_t>(end_hour - 1);
+
+  const std::size_t start_index = start_hour - 1;
+  const std::size_t end_index = end_hour - 1;
 
   std::pair<std::size_t, std::size_t> interval = {start_index, end_index};
 
@@ -51,7 +49,7 @@ void BESS::setDischargeInterval(std::pair<std::size_t, std::size_t> input_interv
 
   forEachInterval(consumer_curve, interval,
                   [&has_generation](double val){
-                    has_generation |= val < 0;
+                    has_generation |= (val < 0);
                   });
 
   if(has_generation){
@@ -74,16 +72,23 @@ void BESS::generateResultingCurve() {
                     window_consumption += val;
                   });
   
-  double discharge_ratio =
-      std::max(0.0, 1 - (daily_stored_energy / window_consumption));
+  double discharge_ratio = 0.0;
+  
+  if(window_consumption > 0){
+    dicharge_ratio = std::max(0.0, 1 - (daily_stored_energy / window_consumption));
+    // val = val - val  * (daily_stored_energy / window_consumption) 
+  }
 
   forEachInterval(consumer_curve, resulting_curve, discharge_interval,
                   [&discharge_ratio](double val){
                     return val * discharge_ratio;
                   });
 
-  const double remaining_energy =std::max(0.0, daily_stored_energy - window_consumption);
-  const double remaining_ratio = remaining_energy / daily_stored_energy;
+  const double remaining_energy = std::max(0.0, daily_stored_energy - window_consumption);
+
+  if(daily_stored_energy > 0) {
+    remaining_ratio = remaining_energy / daily_stored_energy;
+  }
 
   std::pair<std::size_t, std::size_t> complement_interval = getComplementInterval(discharge_interval);
 
@@ -94,11 +99,12 @@ void BESS::generateResultingCurve() {
 
 }
 
+std::array<double, HOURS> BESS::getResultingCurve() const { return resulting_curve; }
+
 double BESS::getPowerAtHour(const std::size_t hour) const {
   return resulting_curve[hour - 1];
 }
 
 const double* BESS::data() const { return consumer_curve.data(); }
-
 const double* BESS::begin() const { return resulting_curve.begin(); }
 const double* BESS::end() const { return resulting_curve.end(); }

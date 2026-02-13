@@ -27,7 +27,7 @@ Características:
 )pbdoc";
 
     // constante
-    m.attr("HOURS") = py::int_(24);
+    m.attr("HOURS") = py::int_(HOURS);
 
     py::class_<BESS>(m, "BESS", py::buffer_protocol(), R"pbdoc(
 BESS(consumer_curve)
@@ -80,7 +80,7 @@ ValueError
                 1, // ndim
                 {24}, // shape
                 {sizeof(double)}, // strides
-                true
+                true // readonly
             );
         })
 
@@ -211,8 +211,9 @@ float
     Potência na hora especificada após simulação.
 )pbdoc")
 
-        .def("__iter__", [](const BESS &s) {
-            return py::make_iterator(s.begin(), s.end());
+        // basic sequence emulation
+        .def("__iter__", [](const BESS &self) {
+            return py::make_iterator(self.begin(), self.end());
         }, py::keep_alive<0, 1>(),
         R"pbdoc(Itera sobre a curva resultante.)pbdoc")
         
