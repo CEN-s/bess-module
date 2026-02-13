@@ -1,4 +1,4 @@
-# BESS Simulation Engine (High-Performance C++ Backend)
+# BESS Simulation Engine
 
 [![Language](https://img.shields.io/badge/language-C%2B%2B-blue.svg)](https://en.cppreference.com/)
 [![Python](https://img.shields.io/badge/python-3.13%2B-blue.svg)](https://www.python.org/)
@@ -39,8 +39,11 @@ The project follows a modular structure:
 git clone https://github.com/CEN-s/bess-daimon.git
 cd bess-daimon
 
-# Install dependencies and the project in editable mode
+# Install dependencies and the project
 uv sync
+
+# Build the module
+uv build
 ```
 
 ### Manual Build (CMake)
