@@ -26,7 +26,8 @@ public:
   double getPowerAtHour(const std::size_t hour) const;  
   
   const double* data() const;
-  const std::array<double, HOURS>& getResultingCurveRef() const; 
+  const double* begin() const;
+  const double* end() const;
 
 
 private:

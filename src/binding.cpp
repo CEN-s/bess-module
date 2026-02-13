@@ -211,20 +211,19 @@ float
     Potência na hora especificada após simulação.
 )pbdoc")
 
-        // iter
         .def("__iter__", [](const BESS &s) {
-            auto& curve = s.getResultingCurveRef();
-            return py::make_iterator(curve.begin(), curve.end());
+            return py::make_iterator(s.begin(), s.end());
         }, py::keep_alive<0, 1>(),
         R"pbdoc(Itera sobre a curva resultante.)pbdoc")
+        
 
-        .def("__len__", [](const BESS &) { return 24; },
+        .def("__len__", [](const BESS &self) { return 24; },
         R"pbdoc(Retorna 24.)pbdoc")
 
-        .def("__getitem__", [](const BESS &s, int i) {
+        .def("__getitem__", [](const BESS &self, int i) {
             if (i < 0) i += 24;
             if (i < 0 || i >= 24) throw py::index_error();
-            return s.getResultingCurve()[i];
+            return self.getResultingCurve()[i];
         },
         R"pbdoc(
 Acesso indexado à curva resultante.

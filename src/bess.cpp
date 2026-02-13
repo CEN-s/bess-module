@@ -94,10 +94,11 @@ void BESS::generateResultingCurve() {
 
 }
 
-const std::array<double, 24>& BESS::getResultingCurveRef() const { return resulting_curve; }
-
 double BESS::getPowerAtHour(const std::size_t hour) const {
   return resulting_curve[hour - 1];
 }
 
 const double* BESS::data() const { return consumer_curve.data(); }
+
+const double* BESS::begin() const { return resulting_curve.begin(); }
+const double* BESS::end() const { return resulting_curve.end(); }
