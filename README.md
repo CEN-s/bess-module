@@ -6,7 +6,7 @@
 
 A high-performance C++ backend for simulating Battery Energy Storage Systems (BESS), featuring seamless Python bindings via Pybind11. This project demonstrates a hybrid architecture where computationally intensive simulation logic is handled by optimized C++ code, while remaining easily accessible for data science workflows in Python.
 
-## 🚀 Key Features
+## Key Features
 
 - **Optimized C++ Core**: Fast simulation of energy storage, discharge, and demand curve flattening.
 - **Pythonic Interface**: Full Pybind11 integration allowing the BESS simulator to be used as a native Python object.
@@ -17,7 +17,7 @@ A high-performance C++ backend for simulating Battery Energy Storage Systems (BE
   - Demand curve transformation (flattening logic).
 - **Modern Tooling**: Built with CMake for C++ and `uv` for Python package management.
 
-## 🏗️ Architecture
+## Architecture
 
 The project follows a modular structure:
 
@@ -25,7 +25,7 @@ The project follows a modular structure:
 - **`src/binding.cpp`**: Pybind11 glue code that exposes the C++ classes to Python.
 - **`pyproject.toml`**: Modern Python packaging configuration using the `uv` build backend.
 
-## 🛠️ Installation
+## Installation
 
 ### Prerequisites
 - CMake 3.15+
@@ -50,7 +50,7 @@ cmake ..
 cmake --build .
 ```
 
-## 💻 Usage Example
+## Usage Example
 
 ```python
 import numpy as np
